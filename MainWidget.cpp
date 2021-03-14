@@ -13,6 +13,7 @@
 #include "VideoPlayerControlBar.h"
 #include "PlayerController.h"
 
+
 MainWidget::MainWidget(QWidget *parent)
     : CustomFramelessDialog(parent)
 {
@@ -42,6 +43,7 @@ void MainWidget::init()
     setLayout(mainLayout);
 
     setWidgetTitleText("DePlayer");
+    setWidgetTitleBottomLine(false);
     setGeometry(400,100,1280,860);
 
     setBackgroundColor("#f0ecf0f6");
@@ -49,10 +51,21 @@ void MainWidget::init()
 
 void MainWidget::requestFullScreen_slot()
 {
+    setWidgetTitleVisible(_fullScreenFlag);
     if(_fullScreenFlag)
+    {
         showNormal();
+
+        auto layout = getMainLayout();
+        layout->setContentsMargins(10,5,10,5);
+    }
     else
+    {
         showFullScreen();
+        auto layout = getMainLayout();
+        layout->setMargin(0);
+    }
 
     _fullScreenFlag = !_fullScreenFlag;
 }
+

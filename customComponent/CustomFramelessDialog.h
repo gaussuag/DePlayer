@@ -21,6 +21,8 @@ public:
     ~CustomFramelessDialog();
 
     void setLayout(QLayout *layout);
+    QVBoxLayout *getMainLayout(){ return mainLayout;}
+
 
     void setDarkTheme();
 
@@ -28,11 +30,11 @@ public:
 
     void setWidgetTitleDirection(Qt::LayoutDirection direction);
 
+    void setWidgetTitleVisible(bool flag);
     void setWidgetTitleText(const QString & text);
     void setWidgetTitleIcon(const QIcon &icon);
     void setWidgetTitleIcon(const QPixmap & pixmap);
     void setWidgetTitleBottomLine(bool flag);
-
     void setWidgetTitleStyleSheet(const QString & textColor, const QString &fontSize);
 
     void hideCloseButton();
@@ -44,6 +46,7 @@ public:
 
     void setBorderRadius(qreal x, qreal y,
                          const QColor & BorderColor = Qt::transparent, const QColor & BackgroundColor = Qt::white);
+
 
     void setResult(int r);
     int result() const;

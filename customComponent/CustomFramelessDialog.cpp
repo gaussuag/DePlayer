@@ -94,6 +94,11 @@ void CustomFramelessDialog::setWidgetTitleDirection(Qt::LayoutDirection directio
     titleWidget->setLayoutDirection(direction);
 }
 
+void CustomFramelessDialog::setWidgetTitleVisible(bool flag)
+{
+    titleWidget->setVisible(flag);
+}
+
 void CustomFramelessDialog::setBorderColor(const QColor &color)
 {
     _borderColor = color;
@@ -438,7 +443,7 @@ void CustomFramelessDialog::initWidget()
     setMouseTracking(true);
 	initTitleWidget();
 
-    spacer = new QSpacerItem(1,1);
+    spacer = new QSpacerItem(1,0);
 
 	mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(10,5,10,5);

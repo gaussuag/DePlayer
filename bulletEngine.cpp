@@ -33,10 +33,7 @@ bool bulletEngine::eventFilter(QObject *watched, QEvent *event)
     if(watched == _view)
     {
         if(event->type() == QEvent::Resize)
-        {
-            qDebug()<<"size"<<_view->geometry()<<_scene->sceneRect();
             _scene->setSceneRect(_view->rect());
-        }
     }
 
     return QObject::eventFilter(watched,event);
@@ -155,7 +152,6 @@ void bulletEngine::bulletAnimationStart_slot(QPropertyAnimation * animationObj)
             _activedAnimationList.removeOne(obj);
     });
     _activedAnimationList.append(animationObj);
-    qDebug()<<"get animation"<<animationObj;
 }
 
 

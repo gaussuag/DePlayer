@@ -27,6 +27,7 @@ SOURCES += \
     customComponent/CustomVideoPlayerProgressBar.cpp \
     customComponent/CustomVolumeWidget.cpp \
     customComponent/CustomWidget.cpp \
+    customComponent/TipsBubbleFloatingHelper.cpp \
     customComponent/VideoPlayerVolumeControlWidget.cpp \
     main.cpp \
     MainWidget.cpp
@@ -45,6 +46,7 @@ HEADERS += \
     customComponent/CustomVideoPlayerProgressBar.h \
     customComponent/CustomVolumeWidget.h \
     customComponent/CustomWidget.h \
+    customComponent/TipsBubbleFloatingHelper.h \
     customComponent/VideoPlayerVolumeControlWidget.h \
     include/mediainfoDLL/MediaInfoDLL.h \
     include/mpv/client.h \

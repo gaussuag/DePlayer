@@ -4,6 +4,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QLabel>
 #include <QAction>
 
 #include "CustomVideoPlayerProgressBar.h"
@@ -55,6 +56,11 @@ void VideoPlayerControlBar::setMute(bool flag)
     _volumeWidget->setMute(flag);
 }
 
+void VideoPlayerControlBar::setDurationString(const QString &duration)
+{
+    _durationLabel->setText(duration);
+}
+
 void VideoPlayerControlBar::fontChanged_slot(const QFont &font)
 {
     auto myFont = font;
@@ -83,6 +89,12 @@ void VideoPlayerControlBar::initWidget()
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
 
+    _durationLabel = new QLabel(this);
+    _durationLabel->setFixedWidth(160);
+    _durationLabel->setStyleSheet("QLabel{"
+                                  "font-size:16px;"
+                                  "color:black;}");
+
     _controlBt = new QPushButton(this);
     _controlBt->setIconSize(QSize(32,32));
     _controlBt->setIcon(QIcon(":/icon/play.png"));
@@ -97,6 +109,8 @@ void VideoPlayerControlBar::initWidget()
     connect(_fullScreen,&QPushButton::clicked,this,&VideoPlayerControlBar::requestFullScreen);
 
     _lineEdit = new QLineEdit(this);
+    _lineEdit->setPlaceholderText("按下回车发送biubiubiu ~");
+
     QAction *fontAction = new QAction(_lineEdit);
     fontAction->setIcon(QIcon(":/icon/font.png"));
     _lineEdit->addAction(fontAction,QLineEdit::LeadingPosition);
@@ -108,7 +122,7 @@ void VideoPlayerControlBar::initWidget()
     connect(colorAction,&QAction::triggered,this,&VideoPlayerControlBar::requestSetColor);
 
     auto lineEditFont = _lineEdit->font();
-    lineEditFont.setPointSize(18);
+    lineEditFont.setPointSize(14);
     _lineEdit->setFont(lineEditFont);
 
     connect(_lineEdit,&QLineEdit::returnPressed,this,[&](){
@@ -127,11 +141,13 @@ void VideoPlayerControlBar::initWidget()
     connect(_volumeWidget,&VideoPlayerVolumeControlWidget::requestSetMute,this,&VideoPlayerControlBar::requestSetMute);
     connect(_volumeWidget,&VideoPlayerVolumeControlWidget::requestSetVolume,this,&VideoPlayerControlBar::requestSetVolume);
 
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(_lineEdit,2);
-    buttonLayout->addStretch(1);
+    buttonLayout->addSpacing(30);
+    buttonLayout->addWidget(_durationLabel);
+    buttonLayout->addStretch(5);
     buttonLayout->addWidget(_controlBt);
-    buttonLayout->addStretch(3);
+    buttonLayout->addSpacing(30);
+    buttonLayout->addWidget(_lineEdit,5);
+    buttonLayout->addSpacing(30);
     buttonLayout->addWidget(_volumeWidget);
     buttonLayout->addSpacing(20);
     buttonLayout->addWidget(_openBt);
@@ -142,7 +158,6 @@ void VideoPlayerControlBar::initWidget()
     initButtonStyleSheet(_controlBt);
     initButtonStyleSheet(_openBt);
     initButtonStyleSheet(_fullScreen);
-
 }
 
 void VideoPlayerControlBar::initActions()
@@ -181,3 +196,5 @@ void VideoPlayerControlBar::initButtonStyleSheet(QPushButton *bt)
                       "padding-left:2px;"
                       "padding-top:2px;}");
 }
+
+

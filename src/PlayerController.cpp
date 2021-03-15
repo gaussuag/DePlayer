@@ -3,7 +3,9 @@
 #include "MpvPlayerWidget.h"
 #include "VideoPlayerControlBar.h"
 #include "bulletEngine.h"
+#include "TipsBubbleFloatingHelper.h"
 
+#include <QTime>
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QColorDialog>
@@ -28,6 +30,8 @@ void PlayerController::setPlayer(MpvPlayerWidget *player, VideoPlayerControlBar 
     connectControlBar();
 
     initBulletEngine();
+
+    _controlBar->setDurationString(durationStringFromFrame());
 }
 
 void PlayerController::connectPlay()
@@ -95,21 +99,30 @@ void PlayerController::player_playStateChanged_slot(Mpv::PlayState state)
 
 void PlayerController::player_fileInfoChanged_slot(const Mpv::FileInfo& VideoFileInfo)
 {
-    Q_UNUSED(VideoFileInfo)
+    /// ¸ù¾Ýfps»ñÈ¡µ¥Ö¡Ê±³¤£¬ºÁÃëµ¥Î»
+    auto fps = VideoFileInfo.video_params.frameRates;
+    _singFrameTime = 1000.000/fps;
 }
 void PlayerController::player_frameNumberChanged_slot(int frame)
 {
     if(_currentFrame == frame)
         return;
 
+    _currentFrame = frame;
+
     if(_controlBar)
+    {
         _controlBar->setPosition(frame);
+        _controlBar->setDurationString(durationStringFromFrame());
+    }
 
     if(_bulletEngine)
         _bulletEngine->synchronizingVideoPosition(frame);
 }
 void PlayerController::player_frameCountChanged_slot(int frameCount)
 {
+    _frameCount = frameCount;
+
     if(_controlBar)
         _controlBar->setDuration(frameCount);
 }
@@ -132,15 +145,27 @@ void PlayerController::controlChanged_slot()
 
 void PlayerController::requestOpenFile_slot()
 {
-    auto filePath = QFileDialog::getOpenFileName(_mainWidget);
+    auto filePath = QFileDialog::getOpenFileName(_mainWidget,
+                                                 QString(),QString(),
+                                                 tr("Video Files (*.mp3 *.wma *.avi *.rm *.rmvb *.flv *.mpg *.mov *.mkv)"));
+
+
+
     if(!filePath.isEmpty())
-        _player->openFile(filePath);
+            _player->openFile(filePath);
 }
 
 void PlayerController::requestEmitBullet_slot(const QString & text)
 {
     if(!text.isEmpty())
+    {
+        if(!_player->isPlaying())
+        {
+            TipsHelper->showTips(QString::fromLocal8Bit("Çë²¥·ÅÊÓÆµÅ¶"));
+            return;
+        }
         _bulletEngine->addBullet(text);
+    }
 }
 
 void PlayerController::requestSetFont_slot()
@@ -189,12 +214,40 @@ void PlayerController::initBulletEngine()
 
 qreal PlayerController::transformFrameToTimestamp(int frameToPosition)
 {
-    ///å¸§å–æ•´
+    ///Ö¡È¡Õû
     int frame = frameToPosition;
-    /// æ ¹æ®fpsèŽ·å–å•å¸§æ—¶é•¿ï¼Œæ¯«ç§’å•ä½
+    /// ¸ù¾Ýfps»ñÈ¡µ¥Ö¡Ê±³¤£¬ºÁÃëµ¥Î»
     auto fps = _player->getMpvFileInfo().video_params.frameRates;
     auto singFrameTime = 1000.000/fps;
 
     qreal timeStamp = singFrameTime * frame;
     return timeStamp;
 }
+
+QString PlayerController::durationStringFromFrame()
+{
+    if(_singFrameTime == 0)
+    {
+        auto fps = _player->getMpvFileInfo().video_params.frameRates;
+        _singFrameTime = 1000.000/fps;
+    }
+
+    qreal timeStamp = _currentFrame * _singFrameTime;
+    qreal duration = _frameCount * _singFrameTime;
+
+    QTime time = QTime::fromMSecsSinceStartOfDay(qRound(timeStamp));
+    QTime totalTime = QTime::fromMSecsSinceStartOfDay(qRound(duration));
+
+    /// hours
+    if(duration >= 3600)
+        return QString("%1 / %2").arg(time.toString(QStringLiteral("h:mm:ss"))).arg(totalTime.toString(QStringLiteral("h:mm:ss")));
+    /// minutes
+    if(duration >= 60)
+        return QString("%1 / %2").arg(time.toString(QStringLiteral("mm:ss"))).arg(totalTime.toString(QStringLiteral("mm:ss")));
+
+    /// second
+    return QString("%1 / %2").arg(time.toString(QStringLiteral("00:ss"))).arg(totalTime.toString(QStringLiteral("00:ss")));
+
+}
+
+

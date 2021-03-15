@@ -26,6 +26,8 @@ private:
     bulletEngine *_bulletEngine{nullptr};
 
     int _currentFrame{0};
+    int _frameCount{0};
+    qreal _singFrameTime{0};
 
     void connectPlay();
     void connectControlBar();
@@ -33,6 +35,8 @@ private:
     void initBulletEngine();
 
     qreal transformFrameToTimestamp(int frameToPosition);
+    QString durationStringFromFrame();
+
 signals:
     void requestFullScreen();
     void fontChanged(const QFont & font);

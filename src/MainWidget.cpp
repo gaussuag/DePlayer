@@ -30,6 +30,7 @@ MainWidget::~MainWidget()
 
 void MainWidget::init()
 {
+
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::WindowMinimizeButtonHint);
 
     QVBoxLayout *mainLayout = new QVBoxLayout();

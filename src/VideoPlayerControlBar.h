@@ -5,6 +5,7 @@
 
 class QPushButton;
 class QLineEdit;
+class QLabel;
 class CustomVideoPlayerProgressBar;
 class VideoPlayerVolumeControlWidget;
 
@@ -26,9 +27,11 @@ public:
     void setVolume(int volume);
     void setMute(bool flag);
 
+    void setDurationString(const QString & duration);
 public slots:
     void fontChanged_slot(const QFont & font);
 private:
+    QLabel *_durationLabel{nullptr};
     CustomVideoPlayerProgressBar *_progressBar{nullptr};
     VideoPlayerVolumeControlWidget *_volumeWidget{nullptr};
 

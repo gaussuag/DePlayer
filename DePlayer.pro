@@ -23,8 +23,11 @@ SOURCES += \
     VideoPlayerControlBar.cpp \
     bulletEngine.cpp \
     customComponent/CustomFramelessDialog.cpp \
+    customComponent/CustomRadiusSlider.cpp \
     customComponent/CustomVideoPlayerProgressBar.cpp \
+    customComponent/CustomVolumeWidget.cpp \
     customComponent/CustomWidget.cpp \
+    customComponent/VideoPlayerVolumeControlWidget.cpp \
     main.cpp \
     MainWidget.cpp
 
@@ -38,8 +41,11 @@ HEADERS += \
     VideoPlayerControlBar.h \
     bulletEngine.h \
     customComponent/CustomFramelessDialog.h \
+    customComponent/CustomRadiusSlider.h \
     customComponent/CustomVideoPlayerProgressBar.h \
+    customComponent/CustomVolumeWidget.h \
     customComponent/CustomWidget.h \
+    customComponent/VideoPlayerVolumeControlWidget.h \
     include/mediainfoDLL/MediaInfoDLL.h \
     include/mpv/client.h \
     include/mpv/opengl_cb.h \

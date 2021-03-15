@@ -16,10 +16,11 @@ public:
     explicit PlayerController(QObject *parent = nullptr);
     ~PlayerController();
 
-    void setPlayer(MpvPlayerWidget *player,VideoPlayerControlBar * controlBar);
+    void setPlayer(MpvPlayerWidget *player, VideoPlayerControlBar * controlBar, QWidget *MainWidget);
 
 
 private:
+    QWidget *_mainWidget{nullptr};
     MpvPlayerWidget *_player{nullptr};
     VideoPlayerControlBar *_controlBar{nullptr};
     bulletEngine *_bulletEngine{nullptr};
@@ -34,6 +35,7 @@ private:
     qreal transformFrameToTimestamp(int frameToPosition);
 signals:
     void requestFullScreen();
+    void fontChanged(const QFont & font);
 private slots:
     void player_playStateChanged_slot(Mpv::PlayState state);
     void player_fileInfoChanged_slot(const Mpv::FileInfo &VideoFileInfo);

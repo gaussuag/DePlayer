@@ -7,6 +7,7 @@
 #include <QAction>
 
 #include "CustomVideoPlayerProgressBar.h"
+#include "VideoPlayerVolumeControlWidget.h"
 
 VideoPlayerControlBar::VideoPlayerControlBar(QWidget *parent) : QWidget(parent)
 {
@@ -46,12 +47,19 @@ void VideoPlayerControlBar::setDuration(int duration)
 
 void VideoPlayerControlBar::setVolume(int volume)
 {
-
+    _volumeWidget->setVolume(volume);
 }
 
 void VideoPlayerControlBar::setMute(bool flag)
 {
+    _volumeWidget->setMute(flag);
+}
 
+void VideoPlayerControlBar::fontChanged_slot(const QFont &font)
+{
+    auto myFont = font;
+    myFont.setPointSize(18);
+    _lineEdit->setFont(myFont);
 }
 
 void VideoPlayerControlBar::initWidget()
@@ -100,6 +108,9 @@ void VideoPlayerControlBar::initWidget()
     _lineEdit->addAction(colorAction,QLineEdit::TrailingPosition);
     connect(colorAction,&QAction::triggered,this,&VideoPlayerControlBar::requestSetColor);
 
+    auto lineEditFont = _lineEdit->font();
+    lineEditFont.setPointSize(18);
+    _lineEdit->setFont(lineEditFont);
 
     connect(_lineEdit,&QLineEdit::returnPressed,this,[&](){
         auto text = _lineEdit->text();
@@ -110,11 +121,20 @@ void VideoPlayerControlBar::initWidget()
         }
     });
 
+    _volumeWidget = new VideoPlayerVolumeControlWidget(this);
+    _volumeWidget->setColor("#adb1e4");
+    _volumeWidget->setMuteColor("#cf0003");
+
+    connect(_volumeWidget,&VideoPlayerVolumeControlWidget::requestSetMute,this,&VideoPlayerControlBar::requestSetMute);
+    connect(_volumeWidget,&VideoPlayerVolumeControlWidget::requestSetVolume,this,&VideoPlayerControlBar::requestSetVolume);
+
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(_lineEdit,2);
     buttonLayout->addStretch(1);
     buttonLayout->addWidget(_controlBt);
-    buttonLayout->addStretch(4);
+    buttonLayout->addStretch(3);
+    buttonLayout->addWidget(_volumeWidget);
+    buttonLayout->addSpacing(20);
     buttonLayout->addWidget(_openBt);
     buttonLayout->addWidget(_fullScreen);
 

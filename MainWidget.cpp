@@ -14,6 +14,10 @@
 #include "PlayerController.h"
 
 
+#include <QScreen>
+#include <QDesktopWidget>
+#include <QApplication>
+
 MainWidget::MainWidget(QWidget *parent)
     : CustomFramelessDialog(parent)
 {
@@ -26,6 +30,8 @@ MainWidget::~MainWidget()
 
 void MainWidget::init()
 {
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::WindowMinimizeButtonHint);
+
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
@@ -38,7 +44,7 @@ void MainWidget::init()
 
     PlayerController *controller = new PlayerController(this);
     connect(controller,&PlayerController::requestFullScreen,this,&MainWidget::requestFullScreen_slot);
-    controller->setPlayer(_player,controlBar);
+    controller->setPlayer(_player,controlBar,this);
 
     setLayout(mainLayout);
 
@@ -46,7 +52,7 @@ void MainWidget::init()
     setWidgetTitleBottomLine(false);
     setGeometry(400,100,1280,860);
 
-    setBackgroundColor("#f0ecf0f6");
+    setBackgroundColor("#ecf0f6");
 }
 
 void MainWidget::requestFullScreen_slot()
@@ -54,7 +60,7 @@ void MainWidget::requestFullScreen_slot()
     setWidgetTitleVisible(_fullScreenFlag);
     if(_fullScreenFlag)
     {
-        showNormal();
+        setGeometry(_normalGeometry);
 
         auto layout = getMainLayout();
         layout->setContentsMargins(10,5,10,5);
@@ -69,3 +75,13 @@ void MainWidget::requestFullScreen_slot()
     _fullScreenFlag = !_fullScreenFlag;
 }
 
+void MainWidget::showFullScreen()
+{
+    _normalGeometry = geometry();
+
+    int screenNumber = QApplication::desktop()->screenNumber(QCursor::pos());
+    QScreen* screen = QApplication::screens().at(screenNumber);
+    QRect CurrentScreenRect = screen->geometry();
+
+    setGeometry(CurrentScreenRect.x(),CurrentScreenRect.y(),CurrentScreenRect.width(),CurrentScreenRect.height()-1);
+}

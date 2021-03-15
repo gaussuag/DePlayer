@@ -18,8 +18,9 @@ PlayerController::~PlayerController()
 
 }
 
-void PlayerController::setPlayer(MpvPlayerWidget *player, VideoPlayerControlBar *controlBar)
+void PlayerController::setPlayer(MpvPlayerWidget *player, VideoPlayerControlBar *controlBar, QWidget *MainWidget)
 {
+    _mainWidget = MainWidget;
     _player = player;
     _controlBar = controlBar;
 
@@ -55,6 +56,12 @@ void PlayerController::connectControlBar()
 
     connect(_controlBar,&VideoPlayerControlBar::requestStep,this,&PlayerController::requestStep_slot);
     connect(_controlBar,&VideoPlayerControlBar::requestBackStep,this,&PlayerController::requestBackStep_slot);
+
+
+    connect(_controlBar,&VideoPlayerControlBar::requestSetVolume,_player,&MpvPlayerWidget::setVolume);
+    connect(_controlBar,&VideoPlayerControlBar::requestSetMute,_player,&MpvPlayerWidget::setMute);
+
+    connect(this,&PlayerController::fontChanged,_controlBar,&VideoPlayerControlBar::fontChanged_slot);
 }
 
 void PlayerController::player_playStateChanged_slot(Mpv::PlayState state)
@@ -124,7 +131,7 @@ void PlayerController::controlChanged_slot()
 
 void PlayerController::requestOpenFile_slot()
 {
-    auto filePath = QFileDialog::getOpenFileName();
+    auto filePath = QFileDialog::getOpenFileName(_mainWidget);
     if(!filePath.isEmpty())
         _player->openFile(filePath);
 }
@@ -140,8 +147,9 @@ void PlayerController::requestSetFont_slot()
     if(_bulletEngine)
     {
         bool flag;
-        auto font = QFontDialog::getFont(&flag,_bulletEngine->getFont());
+        auto font = QFontDialog::getFont(&flag,_bulletEngine->getFont(),_mainWidget);
         _bulletEngine->setFont(font);
+        emit(fontChanged(font));
     }
 }
 
@@ -149,7 +157,7 @@ void PlayerController::requestSetColor_slot()
 {
     if(_bulletEngine)
     {
-        auto color = QColorDialog::getColor(_bulletEngine->getColor());
+        auto color = QColorDialog::getColor(_bulletEngine->getColor(),_mainWidget);
         _bulletEngine->setColor(color);
     }
 }

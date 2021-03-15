@@ -14,12 +14,16 @@ public:
     MainWidget(QWidget *parent = nullptr);
     ~MainWidget();
 
+    void showFullScreen();
 private slots:
     void requestFullScreen_slot();
 private:
     MpvPlayerWidget *_player{nullptr};
 
     bool _fullScreenFlag{false};
+
+    QRect _normalGeometry;
+
     void init();
 
 };

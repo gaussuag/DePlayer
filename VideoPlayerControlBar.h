@@ -6,6 +6,7 @@
 class QPushButton;
 class QLineEdit;
 class CustomVideoPlayerProgressBar;
+class VideoPlayerVolumeControlWidget;
 
 class VideoPlayerControlBar :  public QWidget
 {
@@ -25,8 +26,12 @@ public:
     void setVolume(int volume);
     void setMute(bool flag);
 
+public slots:
+    void fontChanged_slot(const QFont & font);
 private:
     CustomVideoPlayerProgressBar *_progressBar{nullptr};
+    VideoPlayerVolumeControlWidget *_volumeWidget{nullptr};
+
     QPushButton *_controlBt{nullptr};
     QPushButton *_openBt{nullptr};
     QPushButton *_fullScreen{nullptr};
@@ -53,5 +58,8 @@ signals:
 
     void requestStep();
     void requestBackStep();
+
+    void requestSetMute(bool);
+    void requestSetVolume(int);
 };
 #endif // VIDEOPLAYERCONTROLBAR_H

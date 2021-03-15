@@ -25,6 +25,10 @@ void bulletEngine::setPlayer(MpvPlayerWidget *player)
 {
     _player = player;
 
+    _color = Qt::white;
+    _font.setPointSize(24);
+    _font.setFamily(QString::fromUtf8("\351\273\221\344\275\223"));
+
     initCanvas();
 }
 
@@ -124,6 +128,7 @@ void bulletEngine::setPause()
 void bulletEngine::setFont(const QFont &font)
 {
     _font = font;
+
 }
 
 void bulletEngine::setColor(const QColor &color)

@@ -99,7 +99,7 @@ void PlayerController::player_playStateChanged_slot(Mpv::PlayState state)
 
 void PlayerController::player_fileInfoChanged_slot(const Mpv::FileInfo& VideoFileInfo)
 {
-    /// ¸ù¾Ýfps»ñÈ¡µ¥Ö¡Ê±³¤£¬ºÁÃëµ¥Î»
+    /// æ ¹æ®fpsèŽ·å–å•å¸§æ—¶é•¿ï¼Œæ¯«ç§’å•ä½
     auto fps = VideoFileInfo.video_params.frameRates;
     _singFrameTime = 1000.000/fps;
 }
@@ -147,7 +147,12 @@ void PlayerController::requestOpenFile_slot()
 {
     auto filePath = QFileDialog::getOpenFileName(_mainWidget,
                                                  QString(),QString(),
-                                                 tr("Video Files (*.mp3 *.wma *.avi *.rm *.rmvb *.flv *.mpg *.mov *.mkv)"));
+                                                 tr("Video Files (*.avi *.divx *.mpg *.mpeg "
+                                                    "*.m1v *.m2v *.mpv *.dv *.3gp *.mov *.mp4 "
+                                                    "*.m4v *.mqv *.dat *.vcd *.ogm *.ogv *.asf "
+                                                    "*.wmv *.vob *.mkv *.ram *.flv *.rm *.ts "
+                                                    "*.rmvb *.dvr-ms *.m2t *.m2ts *.rec *.f4v "
+                                                    "*.hdmov *.webm *.vp8 *.letv *.hlv *.mts)"));
 
 
 
@@ -161,7 +166,7 @@ void PlayerController::requestEmitBullet_slot(const QString & text)
     {
         if(!_player->isPlaying())
         {
-            TipsHelper->showTips(QString::fromLocal8Bit("Çë²¥·ÅÊÓÆµÅ¶"));
+            TipsHelper->showTips(QString::fromLocal8Bit("è¯·æ’­æ”¾è§†é¢‘å“¦"));
             return;
         }
         _bulletEngine->addBullet(text);
@@ -214,9 +219,9 @@ void PlayerController::initBulletEngine()
 
 qreal PlayerController::transformFrameToTimestamp(int frameToPosition)
 {
-    ///Ö¡È¡Õû
+    ///å¸§å–æ•´
     int frame = frameToPosition;
-    /// ¸ù¾Ýfps»ñÈ¡µ¥Ö¡Ê±³¤£¬ºÁÃëµ¥Î»
+    /// æ ¹æ®fpsèŽ·å–å•å¸§æ—¶é•¿ï¼Œæ¯«ç§’å•ä½
     auto fps = _player->getMpvFileInfo().video_params.frameRates;
     auto singFrameTime = 1000.000/fps;
 
